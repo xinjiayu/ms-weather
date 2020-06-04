@@ -1,0 +1,47 @@
+{
+  "sourceCode": "tianqiapicom",
+  "sourceName": "天气API",
+  "sourceApi": "https://www.tianqiapi.com/api?version={{ .version }}&appid={{ .appId }}&appsecret={{ .appSecret }}&cityid={{ .CityCode }}",
+  "param": {
+    "version": "v6",
+    "appId": "93247964",
+    "appSecret": "MRlcpO5o",
+    "CityCode":"101020100"
+  },
+  "now":{
+    "CityCode":"cityid",
+    "City":"city",
+    "Date":"date",
+    "UpdateTime":"update_time",
+    "Tem":"tem",
+    "TemHigh":"tem1",
+    "TemLow":"tem2",
+    "CondCodeDay":"",
+    "CondTxtDay":"",
+    "CondCodeNight":"",
+    "CondTxtNight":"",
+    "Pm25":"air_pm25",
+    "Pm10":"data.pm10",
+    "Aqi":"air",
+    "Quality":"air_level",
+    "WindDeg":"",
+    "WindDir":"win",
+    "WindSc":"win_speed",
+    "WindSpd":"win_meter",
+    "Pres":"pressure",
+    "Vis":"visibility",
+    "Type":"wea",
+    "Cold":"",
+    "Notice":"air_tips",
+    "Source":"",
+    "CreateTime":""
+  },
+  "forecast": {
+
+  },
+  "filter": {
+    "Tem": "\\D",
+    "TemHigh": "\\D",
+    "TemLow": "\\D"
+  }
+}

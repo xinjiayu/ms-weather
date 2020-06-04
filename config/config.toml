@@ -1,0 +1,25 @@
+# 服务系统设置
+[system]
+    serverName = "city_weather"
+    #接口源配置文件存放目录，绝对路径
+    sourceConfigPath = "./config/source"
+    #启用的源文件名称，如果为空就是全部，空：[] ，赋值例值["xxxx.json","xxxx.json"]
+    sourceFiles = []
+    #数据缓存时间，单位为分钟
+    dataCacheTime = 1
+    #是否启用数据库保存
+    isToDb = true
+
+[logger]
+    path   = "./log"
+    level  = "ALL"
+    stdout = false
+    RotateExpire         = "1d"
+    RotateBackupLimit    = 1
+    RotateBackupExpire   = "7d"
+
+# 数据库配置
+[database]
+    [[database.default]]
+        link = "./db/weather.sqlite"
+        type = "sqlite"

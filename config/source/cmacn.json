@@ -1,0 +1,48 @@
+{
+  "sourceCode": "cmacn",
+  "sourceName": "国家气像中心",
+  "sourceApi": "http://api.data.cma.cn:8090/api?userId={{ .userId }}&pwd={{ .pwd }}&dataFormat=json&interfaceId=getSurfEleByTimeRangeAndStaID&dataCode=SURF_CHN_MUL_HOR&timeRange=[20200604040000,20200604040000]&staIDs=54765&elements=Station_Id_C,Year,Mon,Day,Hour,PRS,PRS_Sea,PRS_Max,PRS_Min,TEM,TEM_Max,TEM_Min,RHU,RHU_Min,VAP,PRE_1h,WIN_D_INST_Max,WIN_S_Max,WIN_D_S_Max,WIN_S_Avg_2mi,WIN_D_Avg_2mi,WEP_Now,WIN_S_Inst_Max,tigan,windpower,VIS,CLO_Cov,CLO_Cov_Low,CLO_COV_LM",
+  "param": {
+    "userId": "591246327162NaSig",
+    "pwd": "SQGThji"
+  },
+  "now":{
+    "CityCode":"cityid",
+    "City":"city",
+    "Date":"DS.0.Day",
+    "UpdateTime":"requestTime",
+    "Tem":"DS.0.TEM",
+    "TemHigh":"DS.0.TEM_Max",
+    "TemLow":"DS.0.TEM_Min",
+    "CondCodeDay":"",
+    "CondTxtDay":"",
+    "CondCodeNight":"",
+    "CondTxtNight":"",
+    "Pm25":"air_pm25",
+    "Pm10":"data.pm10",
+    "Aqi":"air",
+    "Quality":"air_level",
+    "WindDeg":"WIN_D_Avg_2mi",
+    "WindDir":"win",
+    "WindSc":"windpower",
+    "WindSpd":"DS.0.WIN_S_Avg_2mi",
+    "Pres":"pressure",
+    "PresSea":"PRS_Sea",
+    "Vis":"DS.0.VIS",
+    "Type":"WEP_Now",
+    "Cold":"",
+    "Notice":"air_tips",
+    "Source":"",
+    "CreateTime":""
+  },
+  "forecast": {
+
+  },
+  "filter": {
+    "Tem": "\\D",
+    "TemHigh": "\\D",
+    "TemLow": "\\D",
+    "Vis": "^[0-9]+(.[0-9]{1,2})?$",
+    "WindSpd": "^[0-9]+(.[0-9]{1,2})?$"
+  }
+}

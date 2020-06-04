@@ -1,0 +1,50 @@
+{
+  "sourceCode": "111111",
+  "sourceName": "sojson在线",
+  "sourceApi": "http://t.weather.sojson.com/api/weather/city/{{ .CityCode }}",
+  "login":{
+    "key": "",
+    "userName": "",
+    "appSecret":""
+  },
+  "param": {
+    "City": "上海",
+    "CityCode":"101020100"
+  },
+  "now":{
+    "CityCode":"cityInfo.key",
+    "City":"cityInfo.city",
+    "Date":"date",
+    "UpdateTime":"cityInfo.updateTime",
+    "Tem":"data.wendu",
+    "TemHigh":"data.forecast.0.high",
+    "TemLow":"data.forecast.0.low",
+    "CondCodeDay":"",
+    "CondTxtDay":"",
+    "CondCodeNight":"",
+    "CondTxtNight":"",
+    "Pm25":"data.pm25",
+    "Pm10":"data.pm10",
+    "Aqi":"data.forecast.0.aqi",
+    "Quality":"",
+    "WindDeg":"",
+    "WindDir":"data.forecast.0.fx",
+    "WindSc":"data.forecast.0.fl",
+    "WindSpd":"",
+    "Pres":"",
+    "Vis":"",
+    "Type":"data.forecast.0.type",
+    "Cold":"",
+    "Notice":"data.forecast.0.notice",
+    "Source":"",
+    "CreateTime":""
+  },
+  "forecast": {
+
+  },
+  "filter": {
+    "Tem": "\\D",
+    "TemHigh": "\\D",
+    "TemLow": "\\D"
+  }
+}

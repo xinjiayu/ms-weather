@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package pb;
+
+service  WeatherService{
+  //获取实况的天气数据
+  rpc Now(DataReq) returns (NowData){}
+  //获取天气预报数据
+  rpc Forecast(DataReq) returns(ForecastData){}
+}
+
+//请求参数
+message DataReq {
+  string appSecret = 111; //用户访问的授权码
+  string cityCode = 112; //城市编码
+  string city = 113; //城市名称
+}
+
+//天气预报的数据
+message ForecastData{
+  string  cityCode = 1; //城市编号
+  string  city = 2; //城市名称
+  string  updateTime = 3; //更新时间 如："2020-04-13 09:39"
+  repeated WeatherData data = 4; //多天的天气情况
+
+}
+
+//当前天气预报的数据
+message NowData{
+  string  cityCode = 1; //城市编号
+  string  city = 2; //城市名称
+  string  updateTime = 3; //更新时间 如："2020-04-13 09:39"
+  WeatherData data = 4; //多天的天气情况
+}
+
+//天气情况的数据
+message WeatherData{
+  string  id = 801;       //数据id
+  string  cityCode = 802; //城市编号
+  string  city = 803;     //城市名称
+  string  date = 804;     //天气日期
+  string  updateTime = 805;//天气更新的时间，如：12:23
+  string    tem = 806; //当前温度
+  string    temHigh = 807; //最高温度
+  string    temLow = 808; //最低温度
+  string  condCodeDay = 809; //白天天气情况编码
+  string  condTxtDay = 811; //白天天气情况描述
+  string  condCodeNight = 812; //夜间天气情况编码
+  string  condTxtNight = 813; //夜间天气情况描述
+  string    pm25 = 814; //pm2.5值
+  string    pm10 = 815; //pm10值
+  string    aqi = 816; //空气质量指数
+  string  quality = 817; //空气质量描述
+  string    windDeg = 818; //风向360度角度
+  string  windDir = 819; //风向，如东南风
+  string  windSc = 820; //风力 3-4
+  string    windSpd = 821; //风速 公里/小时
+  string    pres = 822;  //大气压强
+  string    vis = 823; //能见度，默认单位：公里
+  string  type = 824; //天气类型
+  string  cold = 825; //感冒指数描述
+  string  notice = 826; //天气提示语
+  string  source = 827; //天气数据来源
+  string  createTime = 828; //数据添加时间
+}
