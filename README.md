@@ -1,6 +1,6 @@
 # MS-WEATHER 
 
-**天气预报第三方数据桥接服务**
+**天气预报第三方数据网关服务**
 
 配置不同的第三方天气数据，统一的数据格式输出，确保天气数据的有效性，并进行数据本地化存储。数据从远程获取支持本地化缓存的功能，减少远程的api调用量。
 配置多个不同的api数据源，字段可以自动合并，输出最大的结果集。
@@ -45,13 +45,12 @@ web路由：[GoFrame](https://github.com/gogf/gf) 【 [中文文档](https://gof
 
 ```
 
-## 运行
+## 基于源码运行
 
-
-**运行 Micro API网关服务**
+**1、运行 Micro API网关服务**
 
 micro api 即可启动api一个网关,默认的端口是8080
-可以通过--address=0.0.0.0:8080flag或者设置环境MICRO_API_ADDRESS=0.0.0.0:8080来修改
+可以通过--address=0.0.0.0:8080 flag或者设置环境MICRO_API_ADDRESS=0.0.0.0:8080来修改
 
 `$ micro api --handler=proxy`
 
@@ -61,8 +60,7 @@ micro --registry=consul --registry_address=127.0.0.1:8500 api
 
 ```
 
-
-运行 Weather Service
+**2、运行 Weather Service**
 
 `$ go run main.go`
 
@@ -107,13 +105,37 @@ curl http://127.0.0.1:8080/weather/forecast
 
 
 
+## 应用部署
+
+1，编译
+
+需要跟据目标运行环境，编译。已编写了一个简单的脚本，进行交叉。
+
+Linux系统：  `./build.sh linux`
+
+Windows系统：  `./build.sh windows`
+
+Mac系统：  `./build.sh mac`
+
+通过build.sh脚本编译后，工程下会生成一个bin目录。就是编译好的运行文件及相关的配置文件、数据库文件。直接复制到目标位置即可。
+
+2，运行
+
+1）运行micro API   `$ micro api`
+
+2）运行Web Api   `./api-srv`
+
+3）运行micro srv   `./weather-srv`
+
+在浏览器中直接访问接口：http://127.0.0.1:8080/weather/now
+
 ## 天气数据源
 
 一、sojson.com 
 说明：https://www.sojson.com/blog/305.html
 
 二、天气API
-https://www.tianqiapi.com/api?version=v6&appid=93247964&appsecret=MRlcpO5o&cityid=101020100
+https://www.tianqiapi.com
 
 三、国家气象信息中心
 http://data.cma.cn/market/index.html
