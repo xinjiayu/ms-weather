@@ -45,12 +45,11 @@ web路由：[GoFrame](https://github.com/gogf/gf) 【 [中文文档](https://gof
 
 ```
 
-## 基于源码运行
+## 源码运行
 
 **1、运行 Micro API网关服务**
 
 micro api 即可启动api一个网关,默认的端口是8080
-可以通过--address=0.0.0.0:8080 flag或者设置环境MICRO_API_ADDRESS=0.0.0.0:8080来修改
 
 `$ micro api --handler=proxy`
 
@@ -60,11 +59,7 @@ micro --registry=consul --registry_address=127.0.0.1:8500 api
 
 ```
 
-**2、运行 Weather Service**
-
-`$ go run main.go`
-
-运行 Weather API
+**2、运行micro web :  Weather API**
 
 ```
 $ go run ./api-srv/main.go
@@ -72,30 +67,25 @@ Listening on [::]:64738
 
 ```
 
-## 服务发现
+**3、运行 Weather Service**
 
-支持多种服务发现系统。默认情况下，服务发现基于组播DNS(mDNS)机制
-如果要使用consul，请按下面方式执行。
+进入到weather-srv目录
 
-**运行consul服务**
+`$ go run ./weather-srv/main.go`
 
-`consul agent -dev`
 
-**srv、api两个服务启动加参数**
-```bash
- --registry=mdns
 
-```
+Curl API 测试Now 天气实况
 
-Curl API
-测试Now 天气实况
 ```
 curl http://127.0.0.1:8080/weather/now
 {
   "message": "Hi, this is the Now API"
 }
 ```
+
 测试forecast 天气预报未来三天的天气情况
+
 ```
 curl http://127.0.0.1:8080/weather/forecast
 {
@@ -105,7 +95,7 @@ curl http://127.0.0.1:8080/weather/forecast
 
 
 
-## 应用部署
+## 应用部署运行
 
 1，编译
 
@@ -129,6 +119,27 @@ Mac系统：  `./build.sh mac`
 
 在浏览器中直接访问接口：http://127.0.0.1:8080/weather/now
 
+
+
+## 服务发现
+
+支持多种服务发现系统。默认情况下，服务发现基于组播DNS(mDNS)机制。
+
+如果要使用consul，请按下面方式执行。
+
+**运行consul服务**
+
+`consul agent -dev`
+
+**srv、api两个服务启动加参数**
+
+```bash
+ --registry=mdns
+
+```
+
+
+
 ## 天气数据源
 
 一、sojson.com 
@@ -151,8 +162,6 @@ http://aqicn.org/city/beijing/cn/
 
 可参考的天气预报接口说明：
 https://open.caiyunapp.com/%E5%BD%A9%E4%BA%91%E5%A4%A9%E6%B0%94_API_%E4%B8%80%E8%A7%88%E8%A1%A8
-
-
 
 
 
