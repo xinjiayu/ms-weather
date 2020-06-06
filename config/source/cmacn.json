@@ -3,8 +3,8 @@
   "sourceName": "国家气像中心",
   "sourceApi": "http://api.data.cma.cn:8090/api?userId={{ .userId }}&pwd={{ .pwd }}&dataFormat=json&interfaceId=getSurfEleByTimeRangeAndStaID&dataCode=SURF_CHN_MUL_HOR&timeRange=[20200604040000,20200604040000]&staIDs=54765&elements=Station_Id_C,Year,Mon,Day,Hour,PRS,PRS_Sea,PRS_Max,PRS_Min,TEM,TEM_Max,TEM_Min,RHU,RHU_Min,VAP,PRE_1h,WIN_D_INST_Max,WIN_S_Max,WIN_D_S_Max,WIN_S_Avg_2mi,WIN_D_Avg_2mi,WEP_Now,WIN_S_Inst_Max,tigan,windpower,VIS,CLO_Cov,CLO_Cov_Low,CLO_COV_LM",
   "param": {
-    "userId": "591246327162NaSig",
-    "pwd": "SQGThji"
+    "userId": "需要申请",
+    "pwd": "需要申请"
   },
   "now":{
     "CityCode":"cityid",
