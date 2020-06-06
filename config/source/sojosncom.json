@@ -40,7 +40,38 @@
     "CreateTime":""
   },
   "forecast": {
-
+    "Config": {
+      "DataNode": "data.forecast",
+      "StartRow": 1,
+      "EndRow": 5
+    },
+    "Data": {
+      "Date":"date",
+      "Ymd": "ymd",
+      "UpdateTime":"",
+      "Tem":"",
+      "TemHigh":"high",
+      "TemLow":"low",
+      "CondCodeDay":"",
+      "CondTxtDay":"",
+      "CondCodeNight":"",
+      "CondTxtNight":"",
+      "Pm25":"",
+      "Pm10":"",
+      "Aqi":"aqi",
+      "Quality":"",
+      "WindDeg":"",
+      "WindDir":"fx",
+      "WindSc":"fl",
+      "WindSpd":"",
+      "Pres":"",
+      "Vis":"",
+      "Type":"type",
+      "Cold":"",
+      "Notice":"notice",
+      "Source":"",
+      "CreateTime":""
+    }
   },
   "filter": {
     "Tem": "\\D",

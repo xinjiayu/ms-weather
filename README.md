@@ -2,14 +2,19 @@
 
 **天气预报第三方数据网关服务**
 
-配置不同的第三方天气数据，统一的数据格式输出，确保天气数据的有效性，并进行数据本地化存储。数据从远程获取支持本地化缓存的功能，减少远程的api调用量。
-配置多个不同的api数据源，字段可以自动合并，输出最大的结果集。
+配置不同的第三方天气数据，统一的数据格式输出，确保天气数据的有效性，并同时进行数据本地化缓存与持久化存储。数据从远程获取通过本地缓存的功能，减少远程的api调用量。通过配置文件配置多个不同的api数据源，字段可以自动合并，输出最大的结果集。新加入数据源只要添加相应的配置文件就可以，无需重新启动服务。
 
 系统采用微服务模式开发。
 
+服务部署后，提供两个接口：
+
+* 1、天气实况数据：/weather/now
+
+* 2、天气预报说据（未来几天的）：/weather/forecast
+
 ## 特点
 
-* 微服务架构，支持多种服务注册中心（mdns、consul、eureka），默认为mdns
+* 微服务架构，支持多种服务注册中心（mDNS、consul、eureka），默认为mdns
 
 * API数据源数据元可以通过文件配置
 
@@ -19,7 +24,7 @@
 
 基于go-micro、GoFrame开发的天气预报桥接服务
 
-微服务框架：[go-micro](https://github.com/micro/go-micro) 【 [中文文档](https://learnku.com/docs/go-micro/2.x) 】 、 [micro](https://github.com/micro/micro) 【 [文档](https://micro.mu/docs/) 】
+微服务框架：[go-micro](https://github.com/micro/go-micro) V2【 [中文文档](https://learnku.com/docs/go-micro/2.x) 】 、 [micro](https://github.com/micro/micro) V2【 [文档](https://micro.mu/docs/) 】
 
 web路由：[GoFrame](https://github.com/gogf/gf) 【 [中文文档](https://goframe.org/index) 】
 
@@ -55,9 +60,11 @@ micro api 即可启动api一个网关,默认的端口是8080
 
 ```bash
 
-micro --registry=consul --registry_address=127.0.0.1:8500 api
+$ micro --registry=consul --registry_address=127.0.0.1:8500 api
 
 ```
+
+注意：micro2 默认支持的服务注册中心是mdns。micro1默认支持的是consul。
 
 **2、运行micro web :  Weather API**
 
@@ -78,7 +85,7 @@ Listening on [::]:64738
 Curl API 测试Now 天气实况
 
 ```
-curl http://127.0.0.1:8080/weather/now
+$ curl http://127.0.0.1:8080/weather/now
 {
   "message": "Hi, this is the Now API"
 }
@@ -87,7 +94,7 @@ curl http://127.0.0.1:8080/weather/now
 测试forecast 天气预报未来三天的天气情况
 
 ```
-curl http://127.0.0.1:8080/weather/forecast
+$ curl http://127.0.0.1:8080/weather/forecast
 {
   "msg": "测试forecast"
 }
@@ -95,17 +102,17 @@ curl http://127.0.0.1:8080/weather/forecast
 
 
 
-## 应用部署运行
+## 部署运行
 
 1，编译
 
 需要跟据目标运行环境，编译。已编写了一个简单的脚本，进行交叉。
 
-Linux系统：  `./build.sh linux`
+Linux系统：  `$ ./build.sh linux`
 
-Windows系统：  `./build.sh windows`
+Windows系统：  `$ ./build.sh windows`
 
-Mac系统：  `./build.sh mac`
+Mac系统：  `$ ./build.sh mac`
 
 通过build.sh脚本编译后，工程下会生成一个bin目录。就是编译好的运行文件及相关的配置文件、数据库文件。直接复制到目标位置即可。
 
@@ -113,9 +120,9 @@ Mac系统：  `./build.sh mac`
 
 1）运行micro API   `$ micro api`
 
-2）运行Web Api   `./api-srv`
+2）运行Web Api   `$ ./api-srv`
 
-3）运行micro srv   `./weather-srv`
+3）运行micro srv   `$ ./weather-srv`
 
 在浏览器中直接访问接口：http://127.0.0.1:8080/weather/now
 
@@ -123,20 +130,45 @@ Mac系统：  `./build.sh mac`
 
 ## 服务发现
 
-支持多种服务发现系统。默认情况下，服务发现基于组播DNS(mDNS)机制。
+支持多种服务发现系统（mDNS、consul、eureka）。默认支的mDNS。
+
+1、mDns 方式
+
+无需添加注册服务中心相关的启动参数，默认支持。可以通过Micro 的web服务查看服务的注册情况。
+
+```
+$ micro web
+
+2020-06-05 08:59:05  level=info service=web HTTP API Listening on [::]:8082
+
+```
+
+2、consul 方式
+
 
 如果要使用consul，请按下面方式执行。
 
 **运行consul服务**
 
-`consul agent -dev`
+`$ consul agent -dev`
 
-**srv、api两个服务启动加参数**
+**micro网关、srv、api三个服务启动加参数**
 
 ```bash
- --registry=mdns
+ --registry=consul
 
 ```
+
+3、eureka 方式
+
+
+**micro网关、srv、api三个服务启动加参数**
+
+```bash
+ --registry=eureka
+
+```
+
 
 
 
@@ -152,17 +184,14 @@ https://www.tianqiapi.com
 http://data.cma.cn/market/index.html
 
 
-
 ## 其它资料
 
 天气质数说明相关的
 
 http://aqicn.org/city/beijing/cn/
 
-
 可参考的天气预报接口说明：
 https://open.caiyunapp.com/%E5%BD%A9%E4%BA%91%E5%A4%A9%E6%B0%94_API_%E4%B8%80%E8%A7%88%E8%A1%A8
-
 
 
 ## API数据源配置文件说明

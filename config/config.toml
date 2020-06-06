@@ -6,9 +6,9 @@
     #启用的源文件名称，如果为空就是全部，空：[] ，赋值例值["xxxx.json","xxxx.json"]
     sourceFiles = []
     #数据缓存时间，单位为分钟
-    dataCacheTime = 1
+    dataCacheTime = 0
     #是否启用数据库保存
-    isToDb = true
+    isToDb = false
 
 [logger]
     path   = "./log"

@@ -24,8 +24,6 @@ func (c *Controller) Now(r *ghttp.Request) {
 	cityCode := r.GetString("cityCode")
 	city := r.GetString("city")
 	dataReq := weather.DataReq{AppSecret: "", CityCode: cityCode, City: city}
-
-	//nowData, err := cl.Now(context.TODO()
 	nowData, err := cl.Now(r.Context(), &dataReq)
 
 	if err != nil {
@@ -37,7 +35,16 @@ func (c *Controller) Now(r *ghttp.Request) {
 
 //Forecast 获取天气预报信息的api接口
 func (c *Controller) Forecast(r *ghttp.Request) {
-	r.Response.Write("天气预报")
+	cityCode := r.GetString("cityCode")
+	city := r.GetString("city")
+	dataReq := weather.DataReq{AppSecret: "", CityCode: cityCode, City: city}
+	forecastData, err := cl.Forecast(r.Context(), &dataReq)
+
+	if err != nil {
+		units.Json(r, 1, err.Error(), "")
+	}
+
+	units.Json(r, 0, "", forecastData.Data)
 }
 
 func main() {

@@ -5,6 +5,7 @@ import (
 	"github.com/gogf/gf/frame/g"
 	"github.com/gogf/gf/os/glog"
 	"github.com/gogf/gf/os/gtime"
+	"github.com/gogf/gf/util/gconv"
 	proto "ms-weather/weather-srv/proto"
 	"ms-weather/weather-srv/units"
 )
@@ -34,7 +35,8 @@ func getApiConfig(configName string) *gjson.Json {
 	return sc
 }
 
-func setData(apiData string, sc *gjson.Json, wd *proto.NowData) {
+// setNowData 从json数据中获取天气情况数据
+func setNowData(apiData string, sc *gjson.Json, wd *proto.NowData) {
 	apiJson := gjson.New(apiData)
 	wd.City = apiJson.GetString(sc.GetString("now.City"))
 	wd.CityCode = apiJson.GetString(sc.GetString("now.CityCode"))
@@ -96,7 +98,6 @@ func setData(apiData string, sc *gjson.Json, wd *proto.NowData) {
 
 	}
 	if wd.Data.WindDeg == "" {
-		wd.Data.WindDeg = apiJson.GetString(sc.GetString("now.WindDeg"))
 		wd.Data.WindDeg = units.NormFormat(apiJson.GetString(sc.GetString("now.WindDeg")), sc.GetString("filter.WindDeg"))
 
 	}
@@ -141,7 +142,8 @@ func setData(apiData string, sc *gjson.Json, wd *proto.NowData) {
 
 }
 
-func saveData(wDataInfo *proto.WeatherData) {
+//saveNowData 保存天气情况
+func saveNowData(wDataInfo *proto.WeatherData) {
 	ctime := gtime.Now().Format("U")
 	sdata := g.Map{
 		"city":          wDataInfo.City,
@@ -177,4 +179,103 @@ func saveData(wDataInfo *proto.WeatherData) {
 	}
 	rid, _ := r.LastInsertId()
 	glog.Info("已存入数据库", rid)
+}
+
+// setForecastData 解决json中的forecast数据
+func setForecastData(apiData string, sc *gjson.Json, fd *proto.ForecastData) {
+	forecastDataJson := gjson.New(apiData)
+	fd.City = forecastDataJson.GetString(sc.GetString("forecast.City"))
+	fd.CityCode = forecastDataJson.GetString(sc.GetString("forecast.CityCode"))
+	fd.UpdateTime = forecastDataJson.GetString(sc.GetString("forecast.UpdateTime"))
+
+	dataNode := sc.GetString("forecast.Config.DataNode")
+	startRow := sc.GetInt("forecast.Config.StartRow")
+	endRow := sc.GetInt("forecast.Config.EndRow")
+	dataList := forecastDataJson.GetMaps(dataNode)
+
+	if endRow > len(dataList) {
+		endRow = len(dataList)
+	}
+	if startRow > endRow {
+		return
+	}
+
+	wDataList := []*proto.WeatherData{}
+
+	if fd.Data == nil {
+		fd.Data = wDataList
+	}
+
+	for i := startRow; i < endRow; i++ {
+		wDataInfo := proto.WeatherData{}
+		glog.Info(dataList[i])
+		if wDataInfo.TemHigh == "" {
+
+			wDataInfo.TemHigh = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.TemHigh")]), sc.GetString("filter.TemHigh"))
+		}
+		if wDataInfo.TemLow == "" {
+			wDataInfo.TemLow = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.TemLow")]), sc.GetString("filter.TemLow"))
+
+		}
+
+		if wDataInfo.Date == "" {
+			wDataInfo.Date = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.Date")]), sc.GetString("filter.Date"))
+
+		}
+		if wDataInfo.UpdateTime == "" {
+			wDataInfo.UpdateTime = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.UpdateTime")]), sc.GetString("filter.UpdateTime"))
+
+		}
+		if wDataInfo.CondCodeDay == "" {
+			wDataInfo.CondCodeDay = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.CondCodeDay")]), sc.GetString("filter.CondCodeDay"))
+
+		}
+		if wDataInfo.CondTxtDay == "" {
+			wDataInfo.CondTxtDay = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.CondTxtDay")]), sc.GetString("filter.CondTxtDay"))
+
+		}
+		if wDataInfo.CondCodeNight == "" {
+			wDataInfo.CondCodeNight = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.CondCodeNight")]), sc.GetString("filter.CondCodeNight"))
+
+		}
+		if wDataInfo.CondTxtNight == "" {
+			wDataInfo.CondTxtNight = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.CondTxtNight")]), sc.GetString("filter.CondTxtNight"))
+
+		}
+		if wDataInfo.WindDeg == "" {
+			wDataInfo.WindDeg = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.WindDeg")]), sc.GetString("filter.WindDeg"))
+
+		}
+		if wDataInfo.WindDir == "" {
+			wDataInfo.WindDir = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.WindDir")]), sc.GetString("filter.WindDir"))
+
+		}
+		if wDataInfo.WindSc == "" {
+			wDataInfo.WindSc = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.WindSc")]), sc.GetString("filter.WindSc"))
+
+		}
+		if wDataInfo.WindSpd == "" {
+			wDataInfo.WindSpd = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.WindSpd")]), sc.GetString("filter.WindSpd"))
+
+		}
+		if wDataInfo.Pres == "" {
+			wDataInfo.Pres = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.Pres")]), sc.GetString("filter.Pres"))
+
+		}
+
+		if wDataInfo.Type == "" {
+			wDataInfo.Type = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.Type")]), sc.GetString("filter.Type"))
+
+		}
+		if wDataInfo.Cold == "" {
+			wDataInfo.Cold = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.Cold")]), sc.GetString("filter.Cold"))
+
+		}
+		if wDataInfo.Notice == "" {
+			wDataInfo.Notice = units.NormFormat(gconv.String(dataList[i][sc.GetString("forecast.Data.Notice")]), sc.GetString("filter.Notice"))
+
+		}
+		fd.Data = append(fd.Data, &wDataInfo)
+	}
+
 }
