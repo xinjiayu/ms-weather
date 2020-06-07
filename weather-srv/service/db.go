@@ -134,9 +134,9 @@ func setNowData(apiData string, sc *gjson.Json, wd *proto.NowData) {
 
 	}
 	if wd.Data.Source == "" {
-		wd.Data.Source = units.NormFormat(apiJson.GetString(sc.GetString("now.Source")), sc.GetString("filter.Source"))
+		wd.Data.Source = sc.GetString("sourceName")
 	} else {
-		wd.Data.Source = wd.Data.Source + "|" + units.NormFormat(apiJson.GetString(sc.GetString("now.Source")), sc.GetString("filter.Source"))
+		wd.Data.Source = wd.Data.Source + "|" + sc.GetString("sourceName")
 
 	}
 
