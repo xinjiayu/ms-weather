@@ -46,6 +46,8 @@ type WeatherService interface {
 	Now(ctx context.Context, in *DataReq, opts ...client.CallOption) (*NowData, error)
 	//获取天气预报数据
 	Forecast(ctx context.Context, in *DataReq, opts ...client.CallOption) (*ForecastData, error)
+	//获取近海天气数据
+	Seas(ctx context.Context, in *DataReq, opts ...client.CallOption) (*SeasData, error)
 }
 
 type weatherService struct {
@@ -80,6 +82,16 @@ func (c *weatherService) Forecast(ctx context.Context, in *DataReq, opts ...clie
 	return out, nil
 }
 
+func (c *weatherService) Seas(ctx context.Context, in *DataReq, opts ...client.CallOption) (*SeasData, error) {
+	req := c.c.NewRequest(c.name, "WeatherService.Seas", in)
+	out := new(SeasData)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for WeatherService service
 
 type WeatherServiceHandler interface {
@@ -87,12 +99,15 @@ type WeatherServiceHandler interface {
 	Now(context.Context, *DataReq, *NowData) error
 	//获取天气预报数据
 	Forecast(context.Context, *DataReq, *ForecastData) error
+	//获取近海天气数据
+	Seas(context.Context, *DataReq, *SeasData) error
 }
 
 func RegisterWeatherServiceHandler(s server.Server, hdlr WeatherServiceHandler, opts ...server.HandlerOption) error {
 	type weatherService interface {
 		Now(ctx context.Context, in *DataReq, out *NowData) error
 		Forecast(ctx context.Context, in *DataReq, out *ForecastData) error
+		Seas(ctx context.Context, in *DataReq, out *SeasData) error
 	}
 	type WeatherService struct {
 		weatherService
@@ -111,4 +126,8 @@ func (h *weatherServiceHandler) Now(ctx context.Context, in *DataReq, out *NowDa
 
 func (h *weatherServiceHandler) Forecast(ctx context.Context, in *DataReq, out *ForecastData) error {
 	return h.WeatherServiceHandler.Forecast(ctx, in, out)
+}
+
+func (h *weatherServiceHandler) Seas(ctx context.Context, in *DataReq, out *SeasData) error {
+	return h.WeatherServiceHandler.Seas(ctx, in, out)
 }

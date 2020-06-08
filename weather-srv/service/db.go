@@ -10,9 +10,7 @@ import (
 	"ms-weather/weather-srv/units"
 )
 
-func getApiConfig(configName string) *gjson.Json {
-	//加载接口源的配置信息文件
-	sourcePath := g.Config().GetString("system.sourceConfigPath")
+func getApiConfig(sourcePath, configName string) *gjson.Json {
 	sourceFile := sourcePath + "/" + configName
 	sc, err := gjson.Load(sourceFile)
 	if err != nil {
@@ -181,7 +179,7 @@ func saveNowData(wDataInfo *proto.WeatherData) {
 	glog.Info("已存入数据库", rid)
 }
 
-// setForecastData 解决json中的forecast数据
+// setForecastData 解析json中的forecast数据
 func setForecastData(apiData string, sc *gjson.Json, fd *proto.ForecastData) {
 	forecastDataJson := gjson.New(apiData)
 	fd.City = forecastDataJson.GetString(sc.GetString("forecast.City"))
@@ -276,6 +274,42 @@ func setForecastData(apiData string, sc *gjson.Json, fd *proto.ForecastData) {
 
 		}
 		fd.Data = append(fd.Data, &wDataInfo)
+	}
+
+}
+
+// setSeasData 解析近海天气情况
+func setSeasData(apiData string, sc *gjson.Json, sd *proto.SeasData) {
+	seasDataJson := gjson.New(apiData)
+	//处理24小时潮汐数据
+	sDataInfo := proto.SeasWeatherData{}
+	if sd.Data == nil {
+		sd.Data = &sDataInfo
+	}
+	sd.Data.PortName = seasDataJson.GetString(sc.GetString("seas.portName"))
+	sd.Data.SeaLevel = seasDataJson.GetString(sc.GetString("seas.seaLevel"))
+	sd.Data.Date = seasDataJson.GetString(sc.GetString("seas.date"))
+
+	dataNode := sc.GetString("seas.tide")
+	dataList := seasDataJson.GetMap(dataNode)
+	sDataList := gconv.Strings(dataList)
+	if sd.Data.Tide == nil {
+		sd.Data.Tide = sDataList
+	}
+
+	//处理range数据
+	rDataInfo := []*proto.SeasRangeData{}
+	if sd.Data.Range == nil {
+		sd.Data.Range = rDataInfo
+	}
+	rangeNode := sc.GetString("seas.range")
+	rangeList := seasDataJson.GetMaps(rangeNode)
+	for i := 0; i < len(rangeList); i++ {
+		rDataInfo := proto.SeasRangeData{}
+		rDataInfo.Type = units.NormFormat(gconv.String(rangeList[i][sc.GetString("seas.rangeData.type")]), sc.GetString("filter.seas.rangeData.type"))
+		rDataInfo.Time = units.NormFormat(gconv.String(rangeList[i][sc.GetString("seas.rangeData.time")]), sc.GetString("filter.seas.rangeData.time"))
+		rDataInfo.Height = units.NormFormat(gconv.String(rangeList[i][sc.GetString("seas.rangeData.height")]), sc.GetString("filter.seas.rangeData.height"))
+		sd.Data.Range = append(sd.Data.Range, &rDataInfo)
 	}
 
 }

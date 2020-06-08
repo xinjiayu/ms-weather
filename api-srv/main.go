@@ -47,6 +47,22 @@ func (c *Controller) Forecast(r *ghttp.Request) {
 	units.Json(r, 0, "", forecastData.Data)
 }
 
+//Seas 获取近海天气信息的接口
+func (c *Controller) Seas(r *ghttp.Request) {
+
+	cityCode := r.GetString("cityCode")
+	city := r.GetString("city")
+	dataReq := weather.DataReq{AppSecret: "", CityCode: cityCode, City: city}
+	seasData, err := cl.Seas(r.Context(), &dataReq)
+
+	if err != nil {
+		units.Json(r, 1, err.Error(), "")
+	}
+
+	units.Json(r, 0, "", seasData.Data)
+
+}
+
 func main() {
 	// 创建服务
 	service := web.NewService(

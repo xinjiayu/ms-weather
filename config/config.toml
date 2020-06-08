@@ -1,12 +1,18 @@
 # 服务系统设置
 [system]
     serverName = "city_weather"
-    #接口源配置文件存放目录，绝对路径
+    #城市天气接口源配置文件存放目录
     sourceConfigPath = "./config/source"
-    #启用的源文件名称，如果为空就是全部，空：[] ，赋值例值["xxxx.json","xxxx.json"]
+    #城市天气启用的源文件名称，如果为空就是全部，空：[] ，赋值例值["xxxx.json","xxxx.json"]
     sourceFiles = []
+
+    #近海天气接口源配置文件存放目录
+    seasSourceConfigPath ="./config/seas_source"
+    #近海天气源文件名称
+    seasSourceFiles = []
+
     #数据缓存时间，单位为分钟。缓存时间参数 = 0表示不过期， 值< 0表示立即过期， 值> 0表示超时过期。
-    dataCacheTime = -1
+    dataCacheTime = 1
     #是否启用数据库保存
     isToDb = true
 

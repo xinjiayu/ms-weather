@@ -7,6 +7,8 @@ service  WeatherService{
   rpc Now(DataReq) returns (NowData){}
   //获取天气预报数据
   rpc Forecast(DataReq) returns(ForecastData){}
+  //获取近海天气数据
+  rpc Seas(DataReq) returns(SeasData){}
 }
 
 //请求参数
@@ -30,7 +32,7 @@ message NowData{
   string  cityCode = 1; //城市编号
   string  city = 2; //城市名称
   string  updateTime = 3; //更新时间 如："2020-04-13 09:39"
-  WeatherData data = 4; //多天的天气情况
+  WeatherData data = 4; //当天的天气情况
 }
 
 //天气情况的数据
@@ -62,4 +64,26 @@ message WeatherData{
   string  notice = 826; //天气提示语
   string  source = 827; //天气数据来源
   string  createTime = 828; //数据添加时间
+}
+
+//当前近海天气的数据
+message SeasData{
+  string  cityCode = 1; //城市编号
+  string  city = 2; //城市名称
+  string  updateTime = 3; //更新时间 如："2020-04-13 09:39"
+  SeasWeatherData data = 4; //当天的近海天气情况
+}
+
+message SeasWeatherData{
+  string portName=1; //港口名称
+  string seaLevel =2; //海平面
+  string date =3; //日期
+  repeated string tide =4; //24小时的潮汐数据
+  repeated SeasRangeData range = 5; //最化点数据
+}
+
+message SeasRangeData{
+  string type=1; //类型：low、high
+  string time=2; //时间点
+  string height=3; //高度
 }

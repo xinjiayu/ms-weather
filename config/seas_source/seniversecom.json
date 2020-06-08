@@ -1,0 +1,24 @@
+{
+  "sourceCode": "seniversecom",
+  "sourceName": "心知天气",
+  "sourceApi": "https://api.seniverse.com/v3/tide/daily.json?key={{ .key }}&location={{ .location }}",
+  "param": {
+    "key": "需要申请",
+    "location": "dandong"
+  },
+  "seas":{
+    "portName":"results.0.location.name",
+    "seaLevel":"results.0.ports.0.port.sea_level",
+    "date":"results.0.ports.0.data.0.date",
+    "tide":"results.0.ports.0.data.0.tide",
+    "range":"results.0.ports.0.data.0.range",
+    "rangeData":{
+      "time":"time",
+      "type":"type",
+      "height":"height"
+    }
+  },
+  "filter": {
+
+  }
+}
