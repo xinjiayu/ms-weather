@@ -10,7 +10,10 @@
 
 * 1、天气实况数据：/weather/now
 
-* 2、天气预报说据（未来几天的）：/weather/forecast
+* 2、天气预报数据（未来几天的）：/weather/forecast
+
+* 3、近海天气数据 /weather/seas
+
 
 ## 特点
 
