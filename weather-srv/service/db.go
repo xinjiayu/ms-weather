@@ -8,6 +8,7 @@ import (
 	"github.com/gogf/gf/util/gconv"
 	proto "ms-weather/weather-srv/proto"
 	"ms-weather/weather-srv/units"
+	"time"
 )
 
 func getApiConfig(sourcePath, configName string) *gjson.Json {
@@ -27,6 +28,13 @@ func getApiConfig(sourcePath, configName string) *gjson.Json {
 	paramData := sc.GetString("param")
 	j := gjson.New(paramData)
 	paramDataMap := j.ToMap()
+
+	//处理特殊的参数
+	if paramDataMap["autoDate"] != "" {
+		curTime := time.Now()                                                             // 获取当前时间
+		paramDataMap["autoDate"] = curTime.Format(gconv.String(paramDataMap["autoDate"])) // 2020-05-19 10:32:07.185
+	}
+
 	//通过文字模板的处理，进行参数替换配置
 	ApiStr := units.StringLiteralTemplate(sourceApi, paramDataMap)
 	sc.Set("sourceApi", ApiStr)
