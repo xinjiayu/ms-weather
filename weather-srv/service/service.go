@@ -65,8 +65,11 @@ func NewSetupData(opts ...Option) *SetupData {
 		sourceFileList = gconv.Strings(sourceConfFileList)
 	}
 	for i := 0; i < len(sourceFileList); i++ {
+		apiConfig := getApiConfig(sourcePath, sourceFileList[i])
 		//加载接口源的配置信息文件
-		setupData.sourceConfigInfo = append(setupData.sourceConfigInfo, getApiConfig(sourcePath, sourceFileList[i]))
+		if apiConfig != nil {
+			setupData.sourceConfigInfo = append(setupData.sourceConfigInfo, apiConfig)
+		}
 	}
 	return setupData
 }
@@ -169,16 +172,18 @@ func (s *SetupData) SeasData(req *proto.DataReq, sd *proto.SeasData) {
 	if gcache.Get(seasDataCacheName) == nil {
 		//从远程获取新的数据
 		for i := 0; i < len(s.sourceConfigInfo); i++ {
-			glog.Info("数据来源：", s.sourceConfigInfo[i].GetString("sourceApi"))
+			if s.sourceConfigInfo[i] != nil {
+				glog.Info("数据来源：", s.sourceConfigInfo[i].GetString("sourceApi"))
 
-			//获取远程api数据
-			apiBodyData, err := collect.GetAPIDataBody(s.sourceConfigInfo[i].GetString("sourceApi"))
-			if err != nil {
-				return
+				//获取远程api数据
+				apiBodyData, err := collect.GetAPIDataBody(s.sourceConfigInfo[i].GetString("sourceApi"))
+				if err != nil {
+					return
+				}
+
+				//跟据配置文件内的字段配置信息获取数据
+				setSeasData(apiBodyData, s.sourceConfigInfo[i], sd)
 			}
-
-			//跟据配置文件内的字段配置信息获取数据
-			setSeasData(apiBodyData, s.sourceConfigInfo[i], sd)
 		}
 
 		//存入缓存，跟据配置文件里的设置进行缓存

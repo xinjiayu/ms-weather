@@ -196,6 +196,9 @@ http://aqicn.org/city/beijing/cn/
 可参考的天气预报接口说明：
 https://open.caiyunapp.com/%E5%BD%A9%E4%BA%91%E5%A4%A9%E6%B0%94_API_%E4%B8%80%E8%A7%88%E8%A1%A8
 
+近海天气情况配置文件说明
+
+支持城市及港口，见 resources目录下的《潮汐预报支持城市及港口.20191226》
 
 ## API数据源配置文件说明
 配置文件的修改将即时生效，无所重启服务。

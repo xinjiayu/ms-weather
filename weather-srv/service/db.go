@@ -15,7 +15,7 @@ func getApiConfig(sourcePath, configName string) *gjson.Json {
 	sourceFile := sourcePath + "/" + configName
 	sc, err := gjson.Load(sourceFile)
 	if err != nil {
-		glog.Error(err)
+		glog.Error("加载配置文件出错！", err)
 		return nil
 	}
 
