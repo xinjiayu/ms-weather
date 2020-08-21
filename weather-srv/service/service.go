@@ -10,6 +10,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	proto "ms-weather/weather-srv/proto"
 	"ms-weather/weather-srv/service/collect"
+	"ms-weather/weather-srv/units"
 	"time"
 )
 
@@ -22,15 +23,21 @@ type SetupData struct {
 // DATA_SEAS 天气数据类型常量，默认城市天气，常量为近海天气
 const DATA_SEAS string = "data_seas"
 
-//定义参数
+//定义服务参数
 type options struct {
 	getDataType string
+	DataReq     *proto.DataReq
 }
 type Option func(c *options)
 
-func GetDataType(sf string) Option {
+func SetDataType(sf string) Option {
 	return func(opts *options) {
 		opts.getDataType = sf
+	}
+}
+func SetDataReq(req *proto.DataReq) Option {
+	return func(opts *options) {
+		opts.DataReq = req
 	}
 }
 
@@ -65,13 +72,46 @@ func NewSetupData(opts ...Option) *SetupData {
 		sourceFileList = gconv.Strings(sourceConfFileList)
 	}
 	for i := 0; i < len(sourceFileList); i++ {
-		apiConfig := getApiConfig(sourcePath, sourceFileList[i])
+		apiConfig := getApiConfig(sourcePath, sourceFileList[i], setupData.opts.DataReq)
 		//加载接口源的配置信息文件
 		if apiConfig != nil {
 			setupData.sourceConfigInfo = append(setupData.sourceConfigInfo, apiConfig)
 		}
 	}
 	return setupData
+}
+
+func getApiConfig(sourcePath, configName string, req *proto.DataReq) *gjson.Json {
+	sourceFile := sourcePath + "/" + configName
+	sc, err := gjson.Load(sourceFile)
+	if err != nil {
+		glog.Error("加载配置文件出错！", err)
+		return nil
+	}
+
+	glog.Info("接口源名称：", sc.GetString("sourceName"))
+	sourceApi := sc.GetString("sourceApi")
+	if sourceApi == "" {
+		return nil
+	}
+	//配置文件中的参数
+	paramData := sc.GetString("param")
+	j := gjson.New(paramData)
+	paramDataMap := j.ToMap()
+
+	//处理特殊的参数
+	if paramDataMap["autoDate"] != "" {
+		curTime := time.Now()                                                             // 获取当前时间
+		paramDataMap["autoDate"] = curTime.Format(gconv.String(paramDataMap["autoDate"])) // 2020-05-19 10:32:07.185
+	}
+	if req.CityCode != "" {
+		paramDataMap["CityCode"] = req.CityCode
+	}
+
+	//通过文字模板的处理，进行参数替换配置
+	ApiStr := units.StringLiteralTemplate(sourceApi, paramDataMap)
+	sc.Set("sourceApi", ApiStr)
+	return sc
 }
 
 // GetDataSource 获取接口源的列表

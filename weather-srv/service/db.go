@@ -8,38 +8,7 @@ import (
 	"github.com/gogf/gf/util/gconv"
 	proto "ms-weather/weather-srv/proto"
 	"ms-weather/weather-srv/units"
-	"time"
 )
-
-func getApiConfig(sourcePath, configName string) *gjson.Json {
-	sourceFile := sourcePath + "/" + configName
-	sc, err := gjson.Load(sourceFile)
-	if err != nil {
-		glog.Error("加载配置文件出错！", err)
-		return nil
-	}
-
-	glog.Info("接口源名称：", sc.GetString("sourceName"))
-	sourceApi := sc.GetString("sourceApi")
-	if sourceApi == "" {
-		return nil
-	}
-	//配置文件中的参数
-	paramData := sc.GetString("param")
-	j := gjson.New(paramData)
-	paramDataMap := j.ToMap()
-
-	//处理特殊的参数
-	if paramDataMap["autoDate"] != "" {
-		curTime := time.Now()                                                             // 获取当前时间
-		paramDataMap["autoDate"] = curTime.Format(gconv.String(paramDataMap["autoDate"])) // 2020-05-19 10:32:07.185
-	}
-
-	//通过文字模板的处理，进行参数替换配置
-	ApiStr := units.StringLiteralTemplate(sourceApi, paramDataMap)
-	sc.Set("sourceApi", ApiStr)
-	return sc
-}
 
 // setNowData 从json数据中获取天气情况数据
 func setNowData(apiData string, sc *gjson.Json, wd *proto.NowData) {

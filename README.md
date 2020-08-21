@@ -61,6 +61,10 @@ micro api 即可启动api一个网关,默认的端口是8080
 
 `$ micro api --handler=proxy`
 
+自定义端口号：
+
+`./micro --server_advertise=127.0.0.1:8088 api --handler=proxy`
+
 ```bash
 
 $ micro --registry=consul --registry_address=127.0.0.1:8500 api
@@ -107,6 +111,7 @@ $ curl http://127.0.0.1:8080/weather/forecast
 
 ## 部署运行
 
+
 1，编译
 
 需要跟据目标运行环境，编译。已编写了一个简单的脚本，进行交叉。
@@ -130,6 +135,29 @@ Mac系统：  `$ ./build.sh mac`
 在浏览器中直接访问接口：http://127.0.0.1:8080/weather/now
 
 
+## 编译环境说明
+
+由于使用的sqlite3数据驱动需要gcc编译。所以不能直接用默认的交叉编译，需要手动进行。
+
+开发环境是MacOS系统，需要安装不同的编译器。在MacOS下安装不同的编译器的方式：
+
+1. Windows平台(mingw-w64)
+
+> 安装编译器：brew install mingw-w64
+
+> 编译指令：CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go build -v
+
+2. Linux平台（x86_64-linux-musl-gcc）
+
+> 安装编译器：brew install FiloSottile/musl-cross/musl-cross
+
+>编译指令：CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-musl-gcc CGO_LDFLAGS="-static" go build -a -v
+
+**注：**
+
+-a:重新编译
+
+-static表示静态连接，没有这个选项，linux上运行报：-bash: ./xxx: /lib/ld-musl-x86_64.so.1: bad ELF interpreter: No such file or directory
 
 ## 服务发现
 
@@ -203,6 +231,11 @@ https://open.caiyunapp.com/%E5%BD%A9%E4%BA%91%E5%A4%A9%E6%B0%94_API_%E4%B8%80%E8
 ## API数据源配置文件说明
 配置文件的修改将即时生效，无所重启服务。
 
+config/source 目录下的json文件为天气预报api数据源配置文件。
+左侧为固定项，右侧为配置api源中对应的字段
+
+其中：
+
 now 为天气实况信息
 
 forecast 为天气预报信息，未来1--5天
@@ -225,11 +258,10 @@ filter的值为正则表达。系统会自动过滤掉通过正则表达式选�
 `[^\u4e00-\u9fa5]^[-,.?:;'\"!']`
 选择所有非汉字，但是不包括-,.?:;'"!'这些标点符号
 
-
-
 `^((?!abc).)*admin((?!abc).)*$`
 包含admin且不包含abc。
 
 *参数特别说明*
 配置文件中param是参数配置项，其中会有一些特别的关键词，系统将做特别处理。跟据需要慢慢增加。
 1、autoDate 自动填写当天的日期，值为显示的格式，跟据需要写。如值为：2006-01-02 15:04:05.000 输出今天的日期，这也是按这个格式显示。
+示例见source/cmacn.json文件中的配置。
