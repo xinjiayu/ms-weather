@@ -6,11 +6,19 @@ import (
 	"github.com/micro/go-micro/v2"
 	_ "github.com/micro/go-plugins/registry/consul/v2"
 	_ "github.com/micro/go-plugins/registry/eureka/v2"
+	"ms-weather/library/version"
 	"ms-weather/weather-srv/handler"
 	proto "ms-weather/weather-srv/proto"
 )
 
+var (
+	BuildVersion = "0.0"
+	BuildTime    = ""
+	CommitID     = ""
+)
+
 func main() {
+	version.ShowLogo(BuildVersion, BuildTime, CommitID)
 
 	logPath := g.Config().GetString("logger.path")
 	glog.SetPath(logPath)

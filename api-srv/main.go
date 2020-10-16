@@ -23,9 +23,10 @@ type Controller struct{}
 func (c *Controller) Now(r *ghttp.Request) {
 	cityCode := r.GetString("cityCode")
 	city := r.GetString("city")
+	glog.Info(cityCode)
 	dataReq := weather.DataReq{AppSecret: "", CityCode: cityCode, City: city}
 	nowData, err := cl.Now(r.Context(), &dataReq)
-
+	glog.Info(nowData)
 	if err != nil {
 		units.Json(r, 1, err.Error(), "")
 	}

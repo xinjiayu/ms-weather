@@ -77,7 +77,6 @@ $ micro --registry=consul --registry_address=127.0.0.1:8500 api
 
 ```
 $ go run ./api-srv/main.go
-Listening on [::]:64738
 
 ```
 

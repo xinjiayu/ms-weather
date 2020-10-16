@@ -1,5 +1,9 @@
 #!/bin/sh
 
+BuildVersion=`git describe --abbrev=0 --tags`
+BuildTime=`date +%FT%T%z`
+CommitID=`git rev-parse HEAD`
+
 servername=weather
 function help() {
     echo "$0 linux|windows|mac"
@@ -7,13 +11,13 @@ function help() {
 
 function linux(){
     echo "编译中..."
-    CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-musl-gcc CGO_LDFLAGS="-static" go build -a
+    CGO_ENABLED=1 GOOS=linux GOARCH=amd64 CC=x86_64-linux-musl-gcc CGO_LDFLAGS="-static" go build -a -ldflags "-w -s -X main.BuildVersion=${BuildVersion} -X main.CommitID=${CommitID} -X main.BuildTime=${BuildTime}"
 }
 function windows(){
-    CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go build
+    CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go build -ldflags "-w -s -X main.BuildVersion=${BuildVersion} -X main.CommitID=${CommitID} -X main.BuildTime=${BuildTime}"
 }
 function mac(){
-    go build
+    go build -ldflags "-w -s -X main.BuildVersion=${BuildVersion} -X main.CommitID=${CommitID} -X main.BuildTime=${BuildTime}"
 }
 function copyFile() {
     echo "编译完成，正在发布到执行目录..."
