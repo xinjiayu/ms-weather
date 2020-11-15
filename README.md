@@ -264,3 +264,9 @@ filter的值为正则表达。系统会自动过滤掉通过正则表达式选�
 配置文件中param是参数配置项，其中会有一些特别的关键词，系统将做特别处理。跟据需要慢慢增加。
 1、autoDate 自动填写当天的日期，值为显示的格式，跟据需要写。如值为：2006-01-02 15:04:05.000 输出今天的日期，这也是按这个格式显示。
 示例见source/cmacn.json文件中的配置。
+
+
+## 感谢 JetBrains 免费的开源授权
+
+<a href="https://www.jetbrains.com/?from=Mybatis-PageHelper" target="_blank">
+<img src="https://user-images.githubusercontent.com/1787798/69898077-4f4e3d00-138f-11ea-81f9-96fb7c49da89.png" height="200"/></a>
